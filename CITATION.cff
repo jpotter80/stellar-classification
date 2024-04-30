@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below."
+title: "Star Dataset for Stellar Classification"
+type: "dataset"
+authors:
+  - family-names: "Ku"
+    given-names: "Wing-Fung"
+doi: "10.34740/KAGGLE/DSV/1433961"
+url: "https://www.kaggle.com/dsv/1433961"
+date-released: 2020-01-01
+publisher: "Kaggle"
