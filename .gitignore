@@ -128,3 +128,4 @@ venv.bak/
 
 # MySQL configuration
 *.cnf
+venv/
