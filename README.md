@@ -1,3 +1,4 @@
+
 # Stellar Classification Project
 
 ## Project Overview
@@ -16,57 +17,67 @@ The dataset includes the following features used for classification:
 
 ### Prerequisites
 - Python 3.x
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
+- PostgreSQL
+- Poetry for dependency management
 
 ### Installation
-Clone the repository and navigate to the project directory. Install the required Python packages using the following command:
+Clone the repository and navigate to the project directory. Set up the environment and install the required dependencies using Poetry:
 
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn
+poetry install
+```
+
+### Database Setup
+Ensure PostgreSQL is running and the `star_db` database is accessible. Use the `database.py` script to set up any necessary database schemas:
+
+```bash
+poetry run python database.py
 ```
 
 ### File Descriptions
-- `load.py`: Loads data from the CSV file.
-- `clean.py`: Cleans and preprocesses the data.
+- `database.py`: Configures the PostgreSQL database for storing and retrieving data.
+- `load.py`: Loads data from the CSV file into the database.
+- `clean.py`: Cleans and preprocesses the data within the database.
 - `explore.py`: Performs exploratory data analysis on the dataset.
 - `visualize.py`: Generates visual plots to explore the data visually.
-- `save.py`: Saves the cleaned data for further use.
+- `save.py`: Saves the cleaned data in the database for further use.
 - `clustering_analysis.py`: Performs clustering to find patterns in the data.
 - `random_forest.py`: Implements the Random Forest classifier for star classification.
 
 ## Usage
 
 ### Running the Scripts
-To run the scripts, navigate to the project directory and execute the following commands:
+To run the scripts within the Poetry environment, navigate to the project directory and execute the following commands:
 
-1. **Loading and cleaning data**
+1. **Setting up the database**
    ```bash
-   python load.py
-   python clean.py
+   poetry run python database.py
    ```
 
-2. **Exploratory Data Analysis**
+2. **Loading and cleaning data**
    ```bash
-   python explore.py
+   poetry run python load.py
+   poetry run python clean.py
    ```
 
-3. **Data Visualization**
+3. **Exploratory Data Analysis**
    ```bash
-   python visualize.py
+   poetry run python explore.py
    ```
 
-4. **Clustering Analysis**
+4. **Data Visualization**
    ```bash
-   python clustering_analysis.py
+   poetry run python visualize.py
    ```
 
-5. **Classification with Random Forest**
+5. **Clustering Analysis**
    ```bash
-   python random_forest.py
+   poetry run python clustering_analysis.py
+   ```
+
+6. **Classification with Random Forest**
+   ```bash
+   poetry run python random_forest.py
    ```
 
 ### Evaluating the Model
@@ -83,6 +94,11 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 - Vizier
-	- This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI: 10.26093/cds/vizier). The original description of 	the VizieR service was published in A&AS 143, 23
+    - This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI: 10.26093/cds/vizier). The original description of the VizieR service was published in A&AS 143, 23
 - The Hipparcos and Tycho Catalogues (ESA 1997)
 ```
+
+### Key Updates:
+- **Database Setup**: Instructions added to set up the PostgreSQL database.
+- **Poetry for Dependency Management**: Updated installation steps to use Poetry, enhancing project setup and dependency management.
+- **Enhanced File Descriptions**: Updated to reflect the integration with PostgreSQL and the use of `database.py`.
