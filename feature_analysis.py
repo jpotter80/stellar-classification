@@ -34,28 +34,26 @@ if 'Actual' in df_scaled.columns and len(df_scaled.columns) > 1:
     explainer = shap.TreeExplainer(model)
     shap_values = explainer.shap_values(df_features)
 
-    # Handle single feature for SHAP summary plot
-    shap_values = shap_values[1]  # for binary classification shap_values[1] holds the values for the positive class
-    feature_names = df_features.columns.tolist()
-    
-    # Check if there's only one feature and adjust plotting
-    if len(feature_names) == 1:
-        # Plotting SHAP values for a single feature
-        plt.figure()
-        plt.title("SHAP Values for Predicted Feature")
-        plt.bar(feature_names, shap_values.mean(axis=0))
-        plt.xlabel("Feature")
-        plt.ylabel("SHAP Value (mean impact)")
-        plt.savefig(output_image_path)
-        print(f"SHAP summary plot for single feature saved to {output_image_path}.")
-    else:
-        # Normal SHAP summary plot
-        shap.summary_plot(shap_values, df_features, feature_names=feature_names, show=False)
-        plt.savefig(output_image_path)
-        print(f"SHAP analysis complete and summary plot saved to {output_image_path}.")
+    # Flatten SHAP values for the positive class and plot
+    shap_values_flat = shap_values[1][:, 0]  # Select the SHAP values for the positive class and flatten
+
+    print("Length of SHAP values:", len(shap_values_flat))
+    print("Example SHAP values:", shap_values_flat[:5])
+
+    # Plotting individual SHAP values for each prediction
+    plt.figure(figsize=(10, 5))
+    plt.title("SHAP Values for Each Prediction", fontsize=16)
+    plt.scatter(range(len(shap_values_flat)), shap_values_flat, color='blue', alpha=0.6, edgecolors='w', linewidth=0.5)
+    plt.axhline(y=np.mean(shap_values_flat), color='red', linestyle='-', linewidth=2, label=f'Mean SHAP Value: {np.mean(shap_values_flat):.4f}')
+    plt.xlabel("Prediction Index", fontsize=14)
+    plt.ylabel("SHAP Value", fontsize=14)
+    plt.legend(fontsize=12)
+    plt.grid(True)
+    plt.savefig(output_image_path)
+    print(f"Updated SHAP summary plot saved to {output_image_path}.")
 
     # Optional: Save SHAP values to a CSV file
-    np.savetxt(output_csv_path, shap_values, delimiter=',')
+    np.savetxt(output_csv_path, shap_values_flat, delimiter=',')
     print(f"SHAP values saved to {output_csv_path}.")
 else:
     print("Error: 'Actual' column missing or no additional features available for analysis.")
