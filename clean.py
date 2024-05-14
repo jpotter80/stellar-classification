@@ -1,35 +1,35 @@
-# clean.py
 import pandas as pd
-from load import load_dataset
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
+def load_data(filepath):
+    """Load dataset from a CSV file."""
+    return pd.read_csv(filepath)
 
 def clean_data(df):
-    """
-    Function to clean data by converting columns to appropriate data types and handling missing values.
-    Args:
-    df (DataFrame): The pandas DataFrame to clean.
+    # Strip any whitespace and convert numeric columns
+    for col in ['Vmag', 'Plx', 'e_Plx', 'B-V']:
+        df[col] = pd.to_numeric(df[col].str.strip(), errors='coerce')
 
-    Returns:
-    DataFrame: The cleaned pandas DataFrame.
-    """
-    # Convert columns to numeric, setting errors to 'coerce' to handle non-numeric values
-    df['Vmag'] = pd.to_numeric(df['Vmag'], errors='coerce')
-    df['Plx'] = pd.to_numeric(df['Plx'], errors='coerce')
-    df['e_Plx'] = pd.to_numeric(df['e_Plx'], errors='coerce')
-    df['B-V'] = pd.to_numeric(df['B-V'], errors='coerce')
+    # Drop rows where e_Plx is above a threshold
+    e_plx_threshold = df['e_Plx'].quantile(0.95)  # using 95th percentile as threshold
+    df = df[df['e_Plx'] <= e_plx_threshold]
 
-    # Drop rows where any of the above conversions resulted in NaN
-    df.dropna(subset=['Vmag', 'Plx', 'e_Plx', 'B-V'], inplace=True)
-
-    # Optional: Drop the 'Unnamed: 0' column if it's not needed
-    df.drop(columns=['Unnamed: 0'], inplace=True)
+    # Normalize using Min-Max scaling
+    scaler = MinMaxScaler()
+    df.loc[:, ['Vmag', 'Plx', 'B-V']] = scaler.fit_transform(df[['Vmag', 'Plx', 'B-V']])  # Use .loc to avoid SettingWithCopyWarning
 
     return df
 
-if __name__ == "__main__":
-    # Load the dataset
-    df = load_dataset()
-    # Clean the dataset
-    df = clean_data(df)
-    # Optionally, here you might save the cleaned data or pass it to another script for further processing
-    print("Cleaned data:")
-    print(df.head())  # Display the first few rows of the cleaned DataFrame
+def save_cleaned_data(df, filepath):
+    """Save the cleaned DataFrame to a new CSV file."""
+    df.to_csv(filepath, index=False)
+
+# Correct path to your CSV file
+data_path = '/home/james/Documents/stellar-classification/Star99999_raw.csv'
+cleaned_data_path = '/home/james/Documents/stellar-classification/Star99999_cleaned.csv'
+
+# Using the functions
+data = load_data(data_path)
+cleaned_data = clean_data(data)
+save_cleaned_data(cleaned_data, cleaned_data_path)

@@ -1,104 +1,81 @@
-
 # Stellar Classification Project
 
-## Project Overview
-This project aims to classify stars into giants and dwarfs using spectral data. We employ machine learning models, specifically a Random Forest classifier, to predict the classification based on features derived from spectral measurements.
+## Overview
+This project is dedicated to the classification of stars based on their spectral characteristics using the Morgan-Keenan (MK) system. The project utilizes Python for data analysis, covering data loading, cleaning, exploration, and normalization to prepare the dataset for machine learning applications.
 
-## Features
-The dataset includes the following features used for classification:
-- `Vmag`: Visual magnitude of the star.
-- `Plx`: Parallax of the star, giving an indication of the distance.
-- `e_Plx`: Error in parallax measurement.
-- `B-V`: The color index of the star.
-- `SpType`: The spectral type of the star.
-- `cluster`: Assigned cluster from preliminary clustering analysis.
+## Project Structure
 
-## Getting Started
+- `load.py`: Contains the function to load the dataset.
+- `clean.py`: Script to clean the dataset by handling missing values and removing outliers.
+- `explore.py`: Used for exploratory data analysis to understand dataset characteristics and normalize data.
+- `README.md`: Provides documentation for the project setup and execution instructions.
 
-### Prerequisites
-- Python 3.x
-- PostgreSQL
-- Poetry for dependency management
+## Data Description
 
-### Installation
-Clone the repository and navigate to the project directory. Set up the environment and install the required dependencies using Poetry:
+The dataset used in this project classifies stars into various spectral types and luminosity classes. It includes several key features:
+- `Vmag`: Visual Apparent Magnitude of the Star.
+- `Plx`: Distance Between the Star and the Earth.
+- `e_Plx`: Standard Error of Plx.
+- `B-V`: B-V color index.
+- `SpType`: Spectral type.
+- `Amag`: Absolute Magnitude of the Star.
 
-```bash
-poetry install
-```
+## File Paths
 
-### Database Setup
-Ensure PostgreSQL is running and the `star_db` database is accessible. Use the `database.py` script to set up any necessary database schemas:
-
-```bash
-poetry run python database.py
-```
-
-### File Descriptions
-- `database.py`: Configures the PostgreSQL database for storing and retrieving data.
-- `load.py`: Loads data from the CSV file into the database.
-- `clean.py`: Cleans and preprocesses the data within the database.
-- `explore.py`: Performs exploratory data analysis on the dataset.
-- `visualize.py`: Generates visual plots to explore the data visually.
-- `save.py`: Saves the cleaned data in the database for further use.
-- `clustering_analysis.py`: Performs clustering to find patterns in the data.
-- `random_forest.py`: Implements the Random Forest classifier for star classification.
+- Dataset path: `/home/james/Documents/stellar-classification/Star99999_raw.csv`
+- Cleaned data path: `/home/james/Documents/stellar-classification/Star99999_cleaned.csv`
 
 ## Usage
 
-### Running the Scripts
-To run the scripts within the Poetry environment, navigate to the project directory and execute the following commands:
+### Setup Environment
 
-1. **Setting up the database**
-   ```bash
-   poetry run python database.py
-   ```
-
-2. **Loading and cleaning data**
-   ```bash
-   poetry run python load.py
-   poetry run python clean.py
-   ```
-
-3. **Exploratory Data Analysis**
-   ```bash
-   poetry run python explore.py
-   ```
-
-4. **Data Visualization**
-   ```bash
-   poetry run python visualize.py
-   ```
-
-5. **Clustering Analysis**
-   ```bash
-   poetry run python clustering_analysis.py
-   ```
-
-6. **Classification with Random Forest**
-   ```bash
-   poetry run python random_forest.py
-   ```
-
-### Evaluating the Model
-Check the output in the console for accuracy metrics and other performance indicators. Detailed reports will be saved in the specified directories within the project structure.
-
-## Contributing
-Contributions are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Authors
-- **jpotter80** - *Initial work* - [MyGithubProfile](https://github.com/jpotter80)
-
-## Acknowledgments
-- Vizier
-    - This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI: 10.26093/cds/vizier). The original description of the VizieR service was published in A&AS 143, 23
-- The Hipparcos and Tycho Catalogues (ESA 1997)
+Ensure that your Python environment is set up with the necessary libraries:
+```bash
+pip install pandas scikit-learn matplotlib seaborn
 ```
 
-### Key Updates:
-- **Database Setup**: Instructions added to set up the PostgreSQL database.
-- **Poetry for Dependency Management**: Updated installation steps to use Poetry, enhancing project setup and dependency management.
-- **Enhanced File Descriptions**: Updated to reflect the integration with PostgreSQL and the use of `database.py`.
+### Running Scripts
+
+1. **Loading Data**
+   ```bash
+   python load.py
+   ```
+   This script will load data from `/home/james/Documents/stellar-classification/Star99999_raw.csv`.
+
+2. **Cleaning Data**
+   ```bash
+   python clean.py
+   ```
+   Executes the cleaning process and saves the cleaned data to `/home/james/Documents/stellar-classification/Star99999_cleaned.csv`.
+
+3. **Exploring Data**
+   ```bash
+   python explore.py
+   ```
+   Performs exploratory data analysis on the cleaned data, providing insights into the dataset and visualizing the normalized data.
+
+## Data Handling Strategies
+
+- **Missing Data**: Missing values in `B-V` and `SpType` are addressed through imputation or removal based on the extent and nature of missingness.
+- **Normalization**: Data normalization is performed to ensure that numerical features contribute equally to analytic models.
+
+## Validation and Analysis
+
+After cleaning and normalization, validate the methods by comparing the properties of the imputed and original data. Sensitivity analysis is recommended to assess the impact of the data handling strategies on the outcomes of the classification models.
+
+## Contribution
+
+Contributions to the project are welcome. Please ensure to update the documentation and paths as necessary to keep the project coherent and up-to-date.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details.
+```
+
+### Notes:
+- **File Paths**: All file paths are updated to reflect the Linux system paths as you've provided.
+- **Scripts and Usage**: Clear instructions on how to run each script and what each script does.
+- **Data Handling Strategies**: Explanation of how missing data is treated and the role of normalization.
+- **Validation and Analysis**: Encourages validating the changes made to the data handling process.
+
+This README should provide a comprehensive guide to maintaining and using the project effectively.
