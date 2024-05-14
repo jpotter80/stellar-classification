@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -11,13 +12,21 @@ def clean_data(df):
     for col in ['Vmag', 'Plx', 'e_Plx', 'B-V']:
         df[col] = pd.to_numeric(df[col].str.strip(), errors='coerce')
 
-    # Drop rows where e_Plx is above a threshold
-    e_plx_threshold = df['e_Plx'].quantile(0.95)  # using 95th percentile as threshold
+    # Impute missing values for B-V and SpType
+    df['B-V'] = df['B-V'].fillna(df['B-V'].mean())
+    df['SpType'] = df['SpType'].fillna('Unknown')
+
+    # Drop rows where e_Plx is above a threshold (95th percentile)
+    e_plx_threshold = df['e_Plx'].quantile(0.95)
     df = df[df['e_Plx'] <= e_plx_threshold]
+
+    # Further handle outliers in Plx (99th percentile)
+    plx_upper_limit = df['Plx'].quantile(0.99)
+    df = df[df['Plx'] <= plx_upper_limit]
 
     # Normalize using Min-Max scaling
     scaler = MinMaxScaler()
-    df.loc[:, ['Vmag', 'Plx', 'B-V']] = scaler.fit_transform(df[['Vmag', 'Plx', 'B-V']])  # Use .loc to avoid SettingWithCopyWarning
+    df.loc[:, ['Vmag', 'Plx', 'B-V']] = scaler.fit_transform(df[['Vmag', 'Plx', 'B-V']])
 
     return df
 
@@ -25,11 +34,13 @@ def save_cleaned_data(df, filepath):
     """Save the cleaned DataFrame to a new CSV file."""
     df.to_csv(filepath, index=False)
 
-# Correct path to your CSV file
-data_path = '/home/james/Documents/stellar-classification/Star99999_raw.csv'
-cleaned_data_path = '/home/james/Documents/stellar-classification/Star99999_cleaned.csv'
+if __name__ == "__main__":
+    # Path to the raw CSV file
+    data_path = '/home/james/Documents/stellar-classification/Star99999_raw.csv'
+    # Path to save the cleaned CSV file
+    cleaned_data_path = '/home/james/Documents/stellar-classification/Star99999_cleaned.csv'
 
-# Using the functions
-data = load_data(data_path)
-cleaned_data = clean_data(data)
-save_cleaned_data(cleaned_data, cleaned_data_path)
+    # Load, clean, and save the data
+    data = load_data(data_path)
+    cleaned_data = clean_data(data)
+    save_cleaned_data(cleaned_data, cleaned_data_path)

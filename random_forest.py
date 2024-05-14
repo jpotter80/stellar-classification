@@ -1,69 +1,87 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Load the processed dataset
-df = pd.read_csv('C:/Users/Jamie/datasets/stellar-classification/Star99999_processed.csv')
+def load_data(filepath):
+    """Load dataset from a CSV file."""
+    return pd.read_csv(filepath)
 
-# Define a function to classify giants and dwarfs
-def classify_giant_dwarf(sptype):
-    # Check if sptype is a string and not NaN
-    if isinstance(sptype, str):
-        if 'III' in sptype:
-            return 1  # Represents a giant
-        elif 'V' in sptype:
-            return 0  # Represents a dwarf
-    return None  # For non-string or NaN values
+def save_model(model, filepath):
+    """Save the trained model to disk."""
+    joblib.dump(model, filepath)
+    print(f"Model saved to {filepath}")
 
-# Apply the function to create a new target column
-df['is_giant'] = df['SpType'].apply(classify_giant_dwarf)
+def plot_feature_importance(model, features, filepath):
+    """Plot feature importance and save the plot."""
+    importance = model.feature_importances_
+    feature_importance_df = pd.DataFrame({'Feature': features, 'Importance': importance})
+    feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
 
-# Drop rows where 'is_giant' is None if there are any
-df = df.dropna(subset=['is_giant'])
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Importance', y='Feature', data=feature_importance_df)
+    plt.title('Feature Importance for Random Forest Model')
+    plt.savefig(filepath)
+    print(f"Feature importance plot saved to {filepath}")
 
-# Convert 'is_giant' to an integer type
-df['is_giant'] = df['is_giant'].astype(int)
+if __name__ == "__main__":
+    # Path to the processed CSV file
+    data_path = '/home/james/Documents/stellar-classification/Star99999_transformed.csv'
+    # Path to save the trained model
+    model_path = '/home/james/Documents/stellar-classification/models/random_forest_model.pkl'
+    # Path to save the feature importance plot
+    feature_importance_path = '/home/james/Documents/stellar-classification/viz/feature_importance.png'
+    # Paths to save model performance and predictions
+    metrics_path = '/home/james/Documents/stellar-classification/model_performance.txt'
+    predictions_path = '/home/james/Documents/stellar-classification/model_predictions.csv'
 
-X = df.drop(['is_giant', 'SpType', 'cluster'], axis=1)  # Drop non-numeric and target columns
-y = df['is_giant']  # Target variable
+    # Load the data
+    df = load_data(data_path)
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # Define the target variable and features
+    df['is_giant'] = df['SpType'].apply(lambda x: 1 if 'III' in str(x) else 0 if 'V' in str(x) else None)
+    df = df.dropna(subset=['is_giant'])
+    df['is_giant'] = df['is_giant'].astype(int)
+    X = df.drop(['is_giant', 'SpType'], axis=1)
+    y = df['is_giant']
 
-# Initialize and train the RandomForestClassifier
-clf = RandomForestClassifier(n_estimators=100, random_state=42)
-clf.fit(X_train, y_train)
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Predict and evaluate the model
-y_pred = clf.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-conf_matrix = confusion_matrix(y_test, y_pred)
-class_report = classification_report(y_test, y_pred)
+    # Initialize and train the RandomForestClassifier
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
 
-# Output the performance metrics
-print("Accuracy:", accuracy)
-print("Confusion Matrix:\n", conf_matrix)
-print("Classification Report:\n", class_report)
+    # Predict and evaluate the model
+    y_pred = clf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    class_report = classification_report(y_test, y_pred)
 
-# Save the model to disk
-model_path = 'C:/Users/Jamie/datasets/stellar-classification/random_forest_model.joblib'
-joblib.dump(clf, model_path)
-print(f"Model saved to {model_path}")
+    # Output the performance metrics
+    print("Accuracy:", accuracy)
+    print("Confusion Matrix:\n", conf_matrix)
+    print("Classification Report:\n", class_report)
 
-# Save the performance metrics to a text file
-metrics_path = 'C:/Users/Jamie/datasets/stellar-classification/model_performance.txt'
-with open(metrics_path, 'w') as f:
-    f.write(f"Accuracy: {accuracy}\n")
-    f.write("Confusion Matrix:\n")
-    f.write(f"{conf_matrix}\n")
-    f.write("Classification Report:\n")
-    f.write(f"{class_report}\n")
-print(f"Performance metrics saved to {metrics_path}")
+    # Save the model to disk
+    save_model(clf, model_path)
 
-# Save the predictions to a CSV file
-predictions_path = 'C:/Users/Jamie/datasets/stellar-classification/model_predictions.csv'
-predictions_df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-predictions_df.to_csv(predictions_path, index=False)
-print(f"Predictions saved to {predictions_path}")
+    # Save the performance metrics to a text file
+    with open(metrics_path, 'w') as f:
+        f.write(f"Accuracy: {accuracy}\n")
+        f.write("Confusion Matrix:\n")
+        f.write(f"{conf_matrix}\n")
+        f.write("Classification Report:\n")
+        f.write(f"{class_report}\n")
+    print(f"Performance metrics saved to {metrics_path}")
+
+    # Save the predictions to a CSV file
+    predictions_df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+    predictions_df.to_csv(predictions_path, index=False)
+    print(f"Predictions saved to {predictions_path}")
+
+    # Plot and save feature importance
+    plot_feature_importance(clf, X.columns, feature_importance_path)

@@ -1,0 +1,15 @@
+Best Parameters: {'bootstrap': True, 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 5, 'n_estimators': 200}
+Accuracy: 0.9027713268307788
+Confusion Matrix:
+[[7020  344]
+ [ 912 4642]]
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.89      0.95      0.92      7364
+           1       0.93      0.84      0.88      5554
+
+    accuracy                           0.90     12918
+   macro avg       0.91      0.89      0.90     12918
+weighted avg       0.90      0.90      0.90     12918
+
