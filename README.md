@@ -112,13 +112,7 @@ The performance of the final Random Forest model is summarized below:
      macro avg       0.91      0.89      0.90     12918
   weighted avg       0.90      0.90      0.90     12918
   ```
-
-### Feature Importance
-
-The importance of each feature used in the final Random Forest model is visualized below:
-
-![Feature Importance](viz/feature_importance_best.png)
-
+  
 ## Usage
 
 1. Clone the repository.
