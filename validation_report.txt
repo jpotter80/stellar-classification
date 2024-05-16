@@ -1,0 +1,17 @@
+Null Values in Each Column:
+Unnamed: 0    0
+Vmag          0
+Plx           0
+e_Plx         0
+B-V           0
+SpType        0
+StarType      0
+
+Data Types of Each Column:
+Unnamed: 0      int64
+Vmag          float64
+Plx           float64
+e_Plx         float64
+B-V           float64
+SpType         object
+StarType       object
