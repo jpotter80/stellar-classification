@@ -18,7 +18,7 @@ The Stellar Classification Project aims to classify stars into giant and dwarf c
 
 ### 1. Loading the Dataset
 
-The `load.py` script loads the original dataset from a CSV file and returns a pandas DataFrame.
+The `load.py` script loads the original dataset from a CSV file named `Star99999_raw.csv` and returns a pandas DataFrame.
 
 #### Libraries Used:
 - `pandas`
@@ -26,7 +26,7 @@ The `load.py` script loads the original dataset from a CSV file and returns a pa
 
 ### 2. Data Cleaning
 
-The `clean.py` script cleans the dataset by handling missing values, outliers, and normalizing the data.
+The `clean.py` script cleans the dataset by handling missing values, outliers, and normalizing the data. Missing values in numeric columns (`Vmag`, `Plx`, `e_Plx`, `B-V`) are imputed using the median value. The `SpType` column is imputed with 'Unknown', and missing values in the `StarType` column are inferred using the cleaned data and initial classification results.
 
 #### Libraries Used:
 - `pandas`
@@ -95,8 +95,8 @@ The `hyperparameter_tuning.py` script tunes the hyperparameters of the Random Fo
 
 The performance of the final Random Forest model is summarized below:
 
-- **Accuracy**: 0.9028
-- **Confusion Matrix**: 
+- **Accuracy**: 83.27%
+- **Confusion Matrix**:
   ```
   [[7020  344]
    [ 912 4642]]
@@ -112,7 +112,13 @@ The performance of the final Random Forest model is summarized below:
      macro avg       0.91      0.89      0.90     12918
   weighted avg       0.90      0.90      0.90     12918
   ```
-  
+- **Precision (Dwarf)**: 0.77
+- **Recall (Dwarf)**: 0.88
+- **F1-Score (Dwarf)**: 0.82
+- **Precision (Giant)**: 0.90
+- **Recall (Giant)**: 0.79
+- **F1-Score (Giant)**: 0.84
+
 ## Usage
 
 1. Clone the repository.
